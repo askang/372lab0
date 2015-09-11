@@ -10,8 +10,6 @@
 
 #define OUTPUT 0
 #define INPUT 1
-#define hi 1
-#define hello 2
 
 void initLEDs(){
     TRISDbits.TRISD0 = OUTPUT;
