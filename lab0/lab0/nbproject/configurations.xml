@@ -9,7 +9,6 @@
       <itemPath>led.h</itemPath>
       <itemPath>timer.h</itemPath>
       <itemPath>interrupt.h</itemPath>
-      <itemPath>config2.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
