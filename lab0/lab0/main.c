@@ -18,10 +18,12 @@
 
 //TODO: Define states of the state machine
 typedef enum stateTypeEnum{
-    led1, led2, led3, wait, wait2, debouncePress, debounceRelease, debounceRelease2
+    led1, led2, led3, waitPress, waitTimer, waitRelease
 } stateType;
 
 //TODO: Use volatile variables that change within interrupts
+volatile int count; //counts the timer for delay
+volatile stateType state = wait; //*do you need this for a specific state?*
 
 int main() {
     
@@ -43,3 +45,5 @@ int main() {
     return 0;
 }
 
+void __ISR(_TIMER_1_VECTOR, IPL7SRS) _T1Interrupt(){
+    //*need this or not?*

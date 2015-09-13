@@ -14,9 +14,10 @@ void initTimer1(){
     //TODO: Initialize Timer 1 to have a period of
     // 1 second. Enable its interrupt
     TMR1 = 0; //initializes the timer, clears it
-    PR1 = ((freq)*(time)/256)-1; //initialize PR
+    //PR1 = ((freq)*(time)/256)-1; //initialize PR
+    PR1 = 1221; //*does this make it a 1 sec timer?*
     T1CONbits.TCS = 0; //setting the oscillator
-    T1CONbits.TCKPS = 4; //Initializes prescalar to 256
+    T1CONbits.TCKPS = 3; //Initializes prescalar to 256
     IEC0bits.T1IE = 1; //enable the interrupt
     IFS0bits.T1IF = 0; //puts the flag down
     IPC1bits.T1IP = 3; //configure Interrupt Priority
