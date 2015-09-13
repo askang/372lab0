@@ -18,12 +18,12 @@
 
 //TODO: Define states of the state machine
 typedef enum stateTypeEnum{
-    led1, led2, led3, waitPress, waitTimer, waitRelease
+    led1, led2, led3, waitPress, waitTimer, waitRelease, wait2
 } stateType;
 
 //TODO: Use volatile variables that change within interrupts
 volatile int count; //counts the timer for delay
-volatile stateType state = wait; //*do you need this for a specific state?*
+volatile stateType state = waitPress; //*what does this do?*
 
 int main() {
     
@@ -37,10 +37,48 @@ int main() {
     initTimer1();
     
     while(1){
-
         //TODO: Implement a state machine to create the desired functionality
+        switch(state){
+            case waitPress:
+                //resets 2 sec timer
+                initTimer1();
+                initTimer2();
+                if (IFS1bits.CNDIF == 1)
+                {
+                    state = waitTimer;
+                }
+                else 
+                {
+                    state = waitPress;
+                }
+                break;
+                
+            case waitTimer:
+                
+                break;
+                
+            case wait2:
+                
+                break;
+                
+            case waitRelease:
+                
+                break;
+                
+            case led1:
+                turnOnLED(1);
+                break;
+                
+            case led2:
+                turnOnLED(2);
+                break;
+                
+            case led3:
+                turnOnLED(3);
+                break;    
+        }
         
-    }
+    
     
     return 0;
 }
