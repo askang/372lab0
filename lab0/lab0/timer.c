@@ -27,10 +27,21 @@ void initTimer1(){
 initTimer2(){
     //TODO: Initialize Timer 2.
     TMR2 = 0; //initializes timer 2
-    
+    T2CONbits.TCKPS = 0;
+    T2CONbits.TCS = 0;
+    IFS0bits.T2IF = 0;
 }
 
 delayMs(int delay){
     //TODO: Using timer 2, create a delay
     // that is delay amount of ms.
+    TMR2 = 0;
+    PR2 = delay*624;
+    IFS0bits.T2IF = 0; //put down flag?
+    T2CONbits.ON = 1; //turns timer on
+    while(IFS0bits.T2IF == 0)
+    {
+    //do nothing    
+    }
+    T2CONbits.ON = 0;
 }

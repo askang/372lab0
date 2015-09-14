@@ -23,7 +23,7 @@ typedef enum stateTypeEnum{
 
 //TODO: Use volatile variables that change within interrupts
 volatile int count; //counts the timer for delay
-volatile stateType state = waitPress; //*what does this do?*
+volatile stateType state = waitPress; //start in this state
 
 int main() {
     
@@ -67,14 +67,17 @@ int main() {
                 
             case led1:
                 turnOnLED(1);
+                state = waitPress;
                 break;
                 
             case led2:
                 turnOnLED(2);
+                state = waitPress;
                 break;
                 
             case led3:
                 turnOnLED(3);
+                state = waitPress;
                 break;    
         }
         
@@ -83,5 +86,5 @@ int main() {
     return 0;
 }
 
-void __ISR(_TIMER_1_VECTOR, IPL7SRS) _T1Interrupt(){
+//void __ISR(_TIMER_1_VECTOR, IPL7SRS) _T1Interrupt(){
     //*need this or not?*
