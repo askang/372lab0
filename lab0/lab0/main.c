@@ -18,12 +18,13 @@
 
 //TODO: Define states of the state machine
 typedef enum stateTypeEnum{
-    led1, led2, led3, waitPress, waitTimer, waitRelease, wait2
+    led1, led2, led3, waitPress, waitTimer, waitRelease, waitChoose
 } stateType;
 
 //TODO: Use volatile variables that change within interrupts
-volatile int count; //counts the timer for delay
+//volatile int count; //counts the timer for delay
 volatile stateType state = waitPress; //start in this state
+volatile int ledcurrent = 0; //keeps up what led is on currently
 
 int main() {
     
@@ -43,8 +44,13 @@ int main() {
                 //resets 2 sec timer
                 initTimer1();
                 initTimer2();
-                if (IFS1bits.CNDIF == 1)
+                if (ledcurrent == 0) 
                 {
+                    turnOnLED(1);
+                }
+                if (IFS1bits.CNDIF == 1) //button pressed
+                {
+                    T1CONbits.ON = 1;
                     state = waitTimer;
                 }
                 else 
@@ -54,37 +60,78 @@ int main() {
                 break;
                 
             case waitTimer:
+                if (IFS1bits.CNDIF == 0 && )
+                {
+                    state = waitChoose;
+                }
                 
+                else if (IFS1bits.CNDIF == 1 && )
+                {
+                    state = waitRelease;
+                }
+                else 
+                {
+                    state = waitTimer;
+                }
                 break;
                 
-            case wait2:
-                
+            case waitChoose: //going forward
+                delayMs(200);
+                if (ledcurrent == 1) //if led 1 is on 
+                {
+                    state = led2;
+                }
+                else if (ledcurrent == 2) //if led 2 is on
+                {
+                    state = led3;
+                }
+                else //if led 3 is on
+                {
+                    state = led1;
+                }
                 break;
                 
-            case waitRelease:
-                
+            case waitRelease: //going backwards
+                delayMs(200);
+                T1CONbits.ON = 0; //turn off timer
+                if (ledcurrent == 1) //if led 1 is on 
+                {
+                    state = led3;
+                }
+                else if (ledcurrent == 2) //if led 2 is on
+                {
+                    state = led1;
+                }
+                else //if led 3 is on
+                {
+                    state = led2;
+                }
                 break;
                 
             case led1:
                 turnOnLED(1);
+                ledcurrent = 1;
                 state = waitPress;
                 break;
                 
             case led2:
                 turnOnLED(2);
+                ledcurrent = 2;
                 state = waitPress;
                 break;
                 
             case led3:
                 turnOnLED(3);
+                ledcurrent = 3;
                 state = waitPress;
                 break;    
         }
-        
-    
-    
+   
     return 0;
 }
+}
 
-//void __ISR(_TIMER_1_VECTOR, IPL7SRS) _T1Interrupt(){
-    //*need this or not?*
+void __ISR(_TIMER_1_VECTOR, IPL3SRS) _T1Interrupt(){
+    IFS0bits.T1IF = 0; //set flag down
+    
+}

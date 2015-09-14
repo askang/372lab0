@@ -6,6 +6,7 @@
  */
 
 #include <xc.h>
+#include "switch.h"
 
 #define OUTPUT 0
 #define INPUT 1
