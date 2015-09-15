@@ -25,7 +25,7 @@ void initTimer1(){
     //T1CONbits.ON = 1; //turns on timer
 }
 
-initTimer2(){
+void initTimer2(){
     //TODO: Initialize Timer 2.
     TMR2 = 0; //initializes timer 2
     T2CONbits.TCKPS = 0;
@@ -33,7 +33,7 @@ initTimer2(){
     IFS0bits.T2IF = 0;
 }
 
-delayMs(int delay){
+void delayMs(int delay){
     //TODO: Using timer 2, create a delay
     // that is delay amount of ms.
     TMR2 = 0;
