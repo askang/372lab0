@@ -45,10 +45,10 @@ int main() {
                 initTimer2();
                 if (ledcurrent == 0) 
                 {
-                    turnOnLED(1);
+                    turnOnLED(1); //turn on led 1 at beginning
+                    ledcurrent = 1;
                 }
-                //if (IFS1bits.CNDIF == 1) //button pressed
-                if (PORTDbits.RD6 == 1)
+                if (PORTDbits.RD6 == 1) //button pressed
                 {
                     T1CONbits.ON = 1;
                     state = waitTimer;
@@ -61,7 +61,6 @@ int main() {
                 
             case waitTimer:
                 if (PORTDbits.RD6 == 0)
-                //if (IFS1bits.CNDIF == 0)
                 {
                     state = waitChoose;
                 }
@@ -127,14 +126,19 @@ int main() {
                 break;    
         }
    
-    return 0;
+    
 }
+    return 0;
 }
 
 void __ISR(_TIMER_1_VECTOR, IPL3SRS) _T1Interrupt(){
     IFS0bits.T1IF = 0; //set flag down
-    if (state == waitPress && PORTDbits.RD6 == 1)//IFS1bits.CNDIF == 0)
+    if (PORTDbits.RD6 == 1)
     {
+        if (state == waitPress)
+        {
         state = waitRelease; //this means that the timer has expired for 2 sec?
+    
+        }
     }
 }
