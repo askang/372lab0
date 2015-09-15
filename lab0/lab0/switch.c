@@ -12,5 +12,8 @@
 #define INPUT 1
 
 void initSwitch1(){
-    TRISDbits.TRISD6 = 1;
+    TRISDbits.TRISD6 = INPUT;
+    CNCONDbits.ON = 1;
+    CNPUDbits.CNPUD6 = 1;
+    
 }

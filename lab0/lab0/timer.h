@@ -10,8 +10,8 @@
 
 
 void initTimer1();
-void initTimer2();
-void delayMs(int delay);
+initTimer2();
+delayMs(int delay);
 
 #endif	/* TIMER_H */
 

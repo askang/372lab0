@@ -22,9 +22,8 @@ typedef enum stateTypeEnum{
 } stateType;
 
 //TODO: Use volatile variables that change within interrupts
-//volatile int count; //counts the timer for delay
 volatile stateType state = waitPress; //start in this state
-volatile int ledcurrent = 0; //keeps up what led is on currently
+volatile int ledcurrent = 0; //keeps up with what led is on currently
 
 int main() {
     
@@ -48,7 +47,8 @@ int main() {
                 {
                     turnOnLED(1);
                 }
-                if (IFS1bits.CNDIF == 1) //button pressed
+                //if (IFS1bits.CNDIF == 1) //button pressed
+                if (PORTDbits.RD6 == 1)
                 {
                     T1CONbits.ON = 1;
                     state = waitTimer;
@@ -60,15 +60,16 @@ int main() {
                 break;
                 
             case waitTimer:
-                if (IFS1bits.CNDIF == 0 && )
+                if (PORTDbits.RD6 == 0)
+                //if (IFS1bits.CNDIF == 0)
                 {
                     state = waitChoose;
                 }
                 
-                else if (IFS1bits.CNDIF == 1 && )
-                {
-                    state = waitRelease;
-                }
+                //else if (IFS1bits.CNDIF == 1 && )
+                //{
+                //    state = waitRelease;
+                //}
                 else 
                 {
                     state = waitTimer;
@@ -93,7 +94,6 @@ int main() {
                 
             case waitRelease: //going backwards
                 delayMs(200);
-                T1CONbits.ON = 0; //turn off timer
                 if (ledcurrent == 1) //if led 1 is on 
                 {
                     state = led3;
@@ -133,5 +133,8 @@ int main() {
 
 void __ISR(_TIMER_1_VECTOR, IPL3SRS) _T1Interrupt(){
     IFS0bits.T1IF = 0; //set flag down
-    
+    if (state == waitPress && PORTDbits.RD6 == 1)//IFS1bits.CNDIF == 0)
+    {
+        state = waitRelease; //this means that the timer has expired for 2 sec?
+    }
 }
