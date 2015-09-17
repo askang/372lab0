@@ -41,7 +41,6 @@ int main() {
         //TODO: Implement a state machine to create the desired functionality
         switch(state){
             case waitPress:
-
                 
                 if (ledcurrent == 0) 
                 {
@@ -76,12 +75,13 @@ int main() {
                     state = waitChoose;
                 }
                 
-                else if (PORTDbits.RD6 == 0 & counter > 2)
+                else if (PORTDbits.RD6 == 1 & counter >= 2)
                 {
+                    T1CONbits.ON = 0;
                     state = waitRelease;
                 }
                 
-                else
+                while (PORTDbits.RD6 == 0)//button is pressed still
                 {
                     state = waitTimer;
                 }
@@ -91,41 +91,48 @@ int main() {
                 delayMs(200);
                 if (ledcurrent == 1) //if led 1 is on 
                 {
+                    ledcurrent = 2;
                     state = led2;
                 }
                 else if (ledcurrent == 2) //if led 2 is on
                 {
+                    ledcurrent = 3;
                     state = led3;
                 }
                 else //if led 3 is on
                 {
+                    ledcurrent = 1;
                     state = led1;
                 }
                 break;
                 
             case waitRelease: //going backwards
-               // delayMs(200);
-                if (PORTDbits.RD6 == 1)
-                {
-                    T1CONbits.ON = 0;
+                delayMs(200);
+               // while (PORTDbits.RD6 == 1)//button is released
+               // {
+                   // T1CONbits.ON = 0;//timer is on 
                 if (ledcurrent == 1) //if led 1 is on 
                 {
+                    //ledcurrent = 3;
                     state = led3;
                 }
                 else if (ledcurrent == 2) //if led 2 is on
                 {
+                    //ledcurrent = 1;
                     state = led1;
+                    
                 }
                 else //if led 3 is on
                 {
+                    //ledcurrent = 2;
                     state = led2;
                 }
-                }
+                //}
                 
-                else 
+                /*else 
                 {
                     state = waitRelease;
-                }
+                }*/
                 break;
                 
             case led1:
@@ -147,14 +154,13 @@ int main() {
                 break;    
         }
    
-    
 }
     return 0;
 }
 
 void __ISR(_TIMER_1_VECTOR, IPL3SRS) _T1Interrupt(){
     IFS0bits.T1IF = 0; //set flag down
-    counter++;
+    counter = counter + 1;
 }
 
 void __ISR(_TIMER_2_VECTOR, IPL4SRS) _T2Interrupt(){

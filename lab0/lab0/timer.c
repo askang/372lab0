@@ -33,7 +33,7 @@ void initTimer2(){
     IFS0bits.T2IF = 0;
 }
 
-void delayMs(int delay){
+void delayMs(unsigned int delay){
     //TODO: Using timer 2, create a delay
     // that is delay amount of ms.
     TMR2 = 0;
