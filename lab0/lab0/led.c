@@ -15,6 +15,9 @@ void initLEDs(){
     TRISDbits.TRISD0 = OUTPUT;
     TRISDbits.TRISD1 = OUTPUT;
     TRISDbits.TRISD2 = OUTPUT;
+        LATDbits.LATD0 = 0;
+        LATDbits.LATD1 = 0;
+        LATDbits.LATD2 = 0;
 }
 
 void turnOnLED(int led){

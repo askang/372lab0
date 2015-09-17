@@ -18,12 +18,13 @@
 
 //TODO: Define states of the state machine
 typedef enum stateTypeEnum{
-    led1, led2, led3, waitPress, waitTimer, waitRelease, waitChoose
+    led1, led2, led3, waitPress, waitTimer, waitRelease, waitChoose, debounce
 } stateType;
 
 //TODO: Use volatile variables that change within interrupts
 volatile stateType state = waitPress; //start in this state
 volatile int ledcurrent = 0; //keeps up with what led is on currently
+volatile int counter = 0; //counter for timer
 
 int main() {
     
@@ -40,36 +41,47 @@ int main() {
         //TODO: Implement a state machine to create the desired functionality
         switch(state){
             case waitPress:
-                //resets 2 sec timer
-                initTimer1();
-                initTimer2();
+
+                
                 if (ledcurrent == 0) 
                 {
                     turnOnLED(1); //turn on led 1 at beginning
                     ledcurrent = 1;
                 }
-                if (PORTDbits.RD6 == 1) //button pressed
+                
+                if (PORTDbits.RD6 == 0) //button pressed
                 {
-                    T1CONbits.ON = 1;
-                    state = waitTimer;
+                    T1CONbits.ON = 0;                
+                    TMR1 = 0;
+                    counter = 0;
+                    state = debounce;
                 }
                 else 
                 {
                     state = waitPress;
                 }
+                
+                break;
+               
+            case debounce:
+                delayMs(200);
+                T1CONbits.ON = 1;
+                state = waitTimer;
                 break;
                 
             case waitTimer:
-                if (PORTDbits.RD6 == 0)
+                if (PORTDbits.RD6 == 1 & counter < 2)
                 {
+                    T1CONbits.ON = 0;
                     state = waitChoose;
                 }
                 
-                //else if (IFS1bits.CNDIF == 1 && )
-                //{
-                //    state = waitRelease;
-                //}
-                else 
+                else if (PORTDbits.RD6 == 0 & counter > 2)
+                {
+                    state = waitRelease;
+                }
+                
+                else
                 {
                     state = waitTimer;
                 }
@@ -92,7 +104,10 @@ int main() {
                 break;
                 
             case waitRelease: //going backwards
-                delayMs(200);
+               // delayMs(200);
+                if (PORTDbits.RD6 == 1)
+                {
+                    T1CONbits.ON = 0;
                 if (ledcurrent == 1) //if led 1 is on 
                 {
                     state = led3;
@@ -104,6 +119,12 @@ int main() {
                 else //if led 3 is on
                 {
                     state = led2;
+                }
+                }
+                
+                else 
+                {
+                    state = waitRelease;
                 }
                 break;
                 
@@ -133,12 +154,9 @@ int main() {
 
 void __ISR(_TIMER_1_VECTOR, IPL3SRS) _T1Interrupt(){
     IFS0bits.T1IF = 0; //set flag down
-    if (PORTDbits.RD6 == 1)
-    {
-        if (state == waitPress)
-        {
-        state = waitRelease; //this means that the timer has expired for 2 sec?
-    
-        }
-    }
+    counter++;
+}
+
+void __ISR(_TIMER_2_VECTOR, IPL4SRS) _T2Interrupt(){
+    IFS0bits.T2IF = 0; //set flag down
 }
