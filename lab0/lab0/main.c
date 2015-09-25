@@ -1,7 +1,7 @@
 /* 
  * File:   main.c
  * Author: gvanhoy
- * Description: lab 0.
+ * Description: lab 0
  * Created on August 27, 2015, 10:14 AM
  */
 
@@ -91,17 +91,17 @@ int main() {
                 delayMs(200);
                 if (ledcurrent == 1) //if led 1 is on 
                 {
-                    ledcurrent = 2;
+                    //ledcurrent = 2;
                     state = led2;
                 }
                 else if (ledcurrent == 2) //if led 2 is on
                 {
-                    ledcurrent = 3;
+                   // ledcurrent = 3;
                     state = led3;
                 }
                 else //if led 3 is on
                 {
-                    ledcurrent = 1;
+                   // ledcurrent = 1;
                     state = led1;
                 }
                 break;
